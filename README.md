@@ -29,6 +29,13 @@ datalinter = "julia_main"
 datalinterserver = "julia_main_server"
 ```
 
+### Sysimage metadata
+Sysimages are built with `--strip-metadata` (`SYSIMAGE_BUILD_ARGS` in
+`build.jl`), which removes docstrings and source locations and makes the
+sysimage about 20% smaller. Method argument names are kept, so code that reads
+keyword-argument names via `Base.kwarg_decl` still works. Code that reads
+docstrings at runtime (`@doc`, `Docs.doc`) would get nothing back.
+
 ## License
 
 This code has an MIT license and therefore it is free as beer.
