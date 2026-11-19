@@ -60,6 +60,11 @@ function build_context(project_dir)
             #"PackageCompiler"=>("https://github.com/JuliaLang/PackageCompiler.jl", "master"),
         ),
         CPU_TARGET = "generic",
+        # Extra arguments for the sysimage compilation. `--strip-metadata` drops
+        # docstrings and source locations (file/line info) from the sysimage. It does
+        # not remove compiled code, IR or method argument names, so behaviour is
+        # unchanged; stack traces show fewer file/line details.
+        SYSIMAGE_BUILD_ARGS = `--strip-metadata`,
         PRECOMPILE_FILES = Dict(t=>joinpath(apps_path, t, "precompile.jl") for t in build_targets),
         EXECUTABLES = Dict(t=>read_executables(joinpath(apps_path, t)) for t in build_targets)
     )
@@ -170,6 +175,7 @@ function build(ctx)
                    precompile_execution_file=ctx.PRECOMPILE_FILES[target],
                    force=true,
                    cpu_target=ctx.CPU_TARGET,
+                   sysimage_build_args=ctx.SYSIMAGE_BUILD_ARGS,
                    exe_kwargs...)
      end
      printstyled("• Build complete.\n", bold=true)
